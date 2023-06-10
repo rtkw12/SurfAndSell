@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Common.Caching.Interfaces;
+using Common.Messaging.Interfaces;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
-namespace Common.Caching;
+namespace Common.Messaging;
 
 public class Publisher : MessageBus, IPublisher
 {

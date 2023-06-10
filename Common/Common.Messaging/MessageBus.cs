@@ -1,6 +1,6 @@
-﻿using Common.Caching.Interfaces;
+﻿using Common.Messaging.Interfaces;
 
-namespace Common.Caching
+namespace Common.Messaging
 {
     public abstract class MessageBus : IMessageBus
     {

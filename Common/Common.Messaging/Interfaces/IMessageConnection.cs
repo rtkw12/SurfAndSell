@@ -1,6 +1,6 @@
 ﻿using RabbitMQ.Client;
 
-namespace Common.Caching.Interfaces;
+namespace Common.Messaging.Interfaces;
 
 public interface IMessageConnection : IDisposable
 {

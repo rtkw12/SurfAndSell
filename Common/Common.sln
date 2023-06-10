@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Messaging", "Common.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Util", "Common.Util\Common.Util.csproj", "{99801D1E-5140-4E94-A2C6-8990C731FA4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.MongoDb", "Common.MongoDb\Common.MongoDb.csproj", "{E706E748-E5B3-425E-8C7B-88868AF8288D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{99801D1E-5140-4E94-A2C6-8990C731FA4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99801D1E-5140-4E94-A2C6-8990C731FA4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99801D1E-5140-4E94-A2C6-8990C731FA4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E706E748-E5B3-425E-8C7B-88868AF8288D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E706E748-E5B3-425E-8C7B-88868AF8288D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E706E748-E5B3-425E-8C7B-88868AF8288D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E706E748-E5B3-425E-8C7B-88868AF8288D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
-﻿using Common.Caching.Interfaces;
+﻿using Common.Messaging.Interfaces;
 using RabbitMQ.Client;
 
-namespace Common.Caching;
+namespace Common.Messaging;
 
 public class MessageConnection : IMessageConnection
 {

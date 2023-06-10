@@ -1,9 +1,9 @@
 ﻿using System.Text;
-using Common.Caching.Interfaces;
+using Common.Messaging.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Common.Caching;
+namespace Common.Messaging;
 
 public class Subscriber : MessageBus, ISubscriber
 {
