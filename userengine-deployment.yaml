@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: userengine
   name: userengine
 spec:
-  replicas: 1
+  replicas: 5
   selector:
     matchLabels:
       io.kompose.service: userengine
