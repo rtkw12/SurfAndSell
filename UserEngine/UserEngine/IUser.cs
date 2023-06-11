@@ -7,6 +7,7 @@ public interface IUser
     string Email { get; }
     DateTime CreatedAt { get; }
     DateTime UpdatedAt { get; }
+    UserType Type { get; }
 
     string? GetToken();
 }

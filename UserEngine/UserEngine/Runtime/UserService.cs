@@ -59,7 +59,7 @@ internal class UserService : MongoService, IUserService
             return TryResult<IUser>.Fail($"Found a user with matching email '{input.Email}'");
         }
 
-        var newUser = new UserStorage(input.Name, input.Email, BCrypt.Net.BCrypt.HashPassword(input.Password), DateTime.UtcNow)
+        var newUser = new UserStorage(input.Name, input.Email, BCrypt.Net.BCrypt.HashPassword(input.Password), UserType.CUSTOMER, DateTime.UtcNow)
         {
             Id = ObjectId.GenerateNewId().ToString()
         };
@@ -75,7 +75,8 @@ internal class UserService : MongoService, IUserService
         string id,
         string? name = null, 
         string? email = null, 
-        string? password = null)
+        string? password = null,
+        UserType type = UserType.CUSTOMER)
     {
         var fb = Builders<UserStorage>.Filter;
         var filter = fb.Eq(x => x.Id, id);
@@ -99,6 +100,7 @@ internal class UserService : MongoService, IUserService
         {
             update.Add(ub.Set(x => x.Password, BCrypt.Net.BCrypt.HashPassword(password)));
         }
+        update.Add(ub.Set(x => x.Type, type));
 
         var result = await Users().UpdateOneAsync(sessionHandle, filter, ub.Combine(update), cancellationToken: cancellationToken);
 
@@ -121,7 +123,7 @@ internal class UserService : MongoService, IUserService
             return TryResult<IUser>.Fail($"Could not find a user with matching email '{email}'");
         }
 
-        if (user.Password != BCrypt.Net.BCrypt.HashPassword(password))
+        if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
         {
             return TryResult<IUser>.Fail("Password is not the same");
         }

@@ -1,0 +1,34 @@
+version: '3.4'
+
+services:
+  mongodb:
+    image: mongo
+    hostname: mongo
+    ports:
+      - '27017:27017'
+    restart: always
+    volumes:
+        - mongo_data:/data/db
+  redis:
+    image: redis
+    hostname: redis
+    restart: always
+    ports:
+      - '6379:6379'
+  userengine:
+    image: rtkw12/userengine-test
+    depends_on:
+      - redis
+      - mongodb
+    links:
+      - redis
+      - mongodb
+    ports:
+      - '7922:7922'
+      - '5022:5022'
+    build:
+      context: .
+      dockerfile: UserEngine/UserEngine/Dockerfile
+
+volumes:
+  mongo_data:

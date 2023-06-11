@@ -1,20 +1,32 @@
-﻿namespace UserEngine.Models;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace UserEngine.Models;
 
 public class User : IUser
 {
-    private readonly IUser _user;
-
     public User(IUser user)
     {
-        _user = user ?? throw new ArgumentNullException(nameof(user));
+        if (user == null) throw new ArgumentNullException(nameof(user));
+        
+        Id = user.Id;
+        Name = user.Name;
+        Email = user.Email;
+        CreatedAt = user.CreatedAt;
+        UpdatedAt = user.UpdatedAt;
+        Type = user.Type;
+        Token = user.GetToken();
     }
 
-    public string Id => _user.Id;
-    public string Name => _user.Name;
-    public string Email => _user.Email;
-    public DateTime CreatedAt => _user.CreatedAt;
-    public DateTime UpdatedAt => _user.UpdatedAt;
-    public string? Token => _user.GetToken();
+    public string Id { get; }
+    public string Name { get; }
+    public string Email { get; }
+    public DateTime CreatedAt { get; }
+    public DateTime UpdatedAt { get; }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public UserType Type { get; }
+    public string? Token { get; }
 
     string? IUser.GetToken() => throw new NotSupportedException();
 }

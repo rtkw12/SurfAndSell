@@ -7,7 +7,7 @@ internal class UserStorage : IUser
 {
     public UserStorage() { }
 
-    public UserStorage(string name, string email, string password, DateTime createdAt)
+    public UserStorage(string name, string email, string password, UserType type, DateTime createdAt)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Email = email ?? throw new ArgumentNullException(nameof(email));
@@ -24,6 +24,7 @@ internal class UserStorage : IUser
     public string Email { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public UserType Type { get; set; }
     public string Password { get; set; }
     public string? Token { get; set; }
 

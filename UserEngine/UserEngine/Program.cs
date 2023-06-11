@@ -1,8 +1,8 @@
 using Common.Caching;
-using Common.Messaging;
-using Common.Messaging.Interfaces;
+using Common.Util.Logging;
 using MongoDB.Driver;
-using RabbitMQ.Client;
+using UserEngine;
+using UserEngine.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +14,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // RabbitMQ
-builder.Services.AddSingleton<IMessageConnection>(
+/*builder.Services.AddSingleton<IMessageConnection>(
     new MessageConnection(builder.Configuration.GetConnectionString("RabbitMQ")));
-builder.Services.AddScoped<ISubscriber>(x =>
+builder.Services.AddSingleton<ISubscriber>(x =>
     new Subscriber(x.GetService<IMessageConnection>() ?? throw new InvalidOperationException(),
-        "UserExchange",
+        "OrderExchange",
         ExchangeType.Topic,
-        "User",
-        "USER"));
+        "Store",
+        "ORDER.STORE",
+        "ItemExchange"));
+builder.Services.AddSingleton<IPublisher>(x =>
+    new Publisher(x.GetService<IMessageConnection>() ?? throw new InvalidOperationException(),
+        "ItemExchange",
+        ExchangeType.Topic));*/
 
 // MongoDB
 builder.Services.AddSingleton<IMongoClient>(new MongoClient(builder.Configuration.GetConnectionString("MongoDB")));
@@ -29,16 +34,36 @@ builder.Services.AddSingleton<IMongoClient>(new MongoClient(builder.Configuratio
 // Redis Cache
 builder.Services.AddSingleton<ICacheConnectionProvider>(
     new CacheConnectionProvider(builder.Configuration.GetConnectionString("Redis")));
+
 builder.Services.AddSingleton<ICacheService>(c => new CacheService(c.GetService<ICacheConnectionProvider>() ?? throw new InvalidOperationException()));
+
+// Logging
+builder.Services.AddLogging();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging")); 
+var logger = builder.Services.BuildServiceProvider().GetService<ILogger<LoggingService>>();
+builder.Services.AddSingleton(typeof(ILogger), logger ?? throw new InvalidOperationException());
+builder.Services.AddScoped<ILoggingService, LoggingService>();
+
+// Services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IStoreService, StoreService>();
+
+builder.Services.AddHealthChecks();
+// Hosted Services
+//builder.Services.AddHostedService<StoreSubscriber>();
 
 var app = builder.Build();
 
+app.MapHealthChecks("/health");
+
+logger.LogInformation("Started");
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "test v1"));
 
 app.UseHttpsRedirection();
 

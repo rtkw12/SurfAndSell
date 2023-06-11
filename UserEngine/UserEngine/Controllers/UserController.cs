@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 using UserEngine.Models;
 
 namespace UserEngine.Controllers
@@ -15,6 +14,7 @@ namespace UserEngine.Controllers
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
+        [HttpPost]
         [Route("register")]
         public async Task<IActionResult> RegisterUser(UserInput input, CancellationToken cancellationToken)
         {
@@ -28,6 +28,7 @@ namespace UserEngine.Controllers
                 : BadRequest(result.ErrorMessage);
         }
 
+        [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetUser(string id, CancellationToken cancellationToken)
         {
@@ -39,8 +40,9 @@ namespace UserEngine.Controllers
                 : BadRequest(result.ErrorMessage);
         }
 
+        [HttpPut]
         [Route("{id}/update")]
-        public async Task<IActionResult> RegisterUser(string id, UserUpdate input, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateUser(string id, UserUpdate input, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) { return BadRequest("Model given was not valid"); }
 
@@ -52,6 +54,35 @@ namespace UserEngine.Controllers
                 : BadRequest(result.ErrorMessage);
         }
 
+        [HttpPut]
+        [Route("{id}/update/owner")]
+        public async Task<IActionResult> UpdateUserStore(string id, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid) { return BadRequest("Model given was not valid"); }
+
+            using var session = await _userService.GetSessionAsync();
+            var result = await _userService.TryUpdateUser(session, cancellationToken, id, type: UserType.STORE_OWNER);
+
+            return result.Success
+                ? Ok()
+                : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpPut]
+        [Route("{id}/update/admin")]
+        public async Task<IActionResult> UpdateUserAdmin(string id, CancellationToken cancellationToken)
+        {
+            if (!ModelState.IsValid) { return BadRequest("Model given was not valid"); }
+
+            using var session = await _userService.GetSessionAsync();
+            var result = await _userService.TryUpdateUser(session, cancellationToken, id, type: UserType.ADMIN);
+
+            return result.Success
+                ? Ok()
+                : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginInput input, CancellationToken cancellationToken)
         {
@@ -65,6 +96,7 @@ namespace UserEngine.Controllers
                 : BadRequest(result.ErrorMessage);
         }
 
+        [HttpPut]
         [Route("{id}/logout")]
         public async Task<IActionResult> Logout(string id, CancellationToken cancellationToken)
         {

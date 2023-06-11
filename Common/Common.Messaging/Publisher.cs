@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Text;
 using Common.Messaging.Interfaces;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -24,7 +23,7 @@ public class Publisher : MessageBus, IPublisher
         _model.ExchangeDeclare(exchangeName, exchangeType, arguments: ttl);
     }
 
-    public void Publish<T>([DisallowNull] T toPublish, string routingKey, IDictionary<string, object> messageAttributes, string timeToLive = "30000") where T : class
+    public void Publish<T>(T toPublish, string routingKey, IDictionary<string, object>? messageAttributes, string timeToLive = "30000")
     {
         if (toPublish == null) throw new ArgumentNullException(nameof(toPublish));
         if (routingKey == null) throw new ArgumentNullException(nameof(routingKey));
@@ -39,6 +38,22 @@ public class Publisher : MessageBus, IPublisher
         _model.BasicPublish(ExchangeName, routingKey, properties, body);
     }
 
+    public void PublishResponse<T>(T toPublish, string queueName, string routingKey, IDictionary<string, object>? messageAttributes, string timeToLive = "30000")
+    {
+        if (toPublish == null) throw new ArgumentNullException(nameof(toPublish));
+        if (routingKey == null) throw new ArgumentNullException(nameof(routingKey));
+
+        var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(toPublish));
+
+        var properties = _model.CreateBasicProperties();
+        properties.Persistent = true;
+        properties.ReplyTo = queueName;
+        properties.CorrelationId = Guid.NewGuid().ToString();
+        properties.Headers = messageAttributes;
+        properties.Expiration = timeToLive;
+
+        _model.BasicPublish(ExchangeName, routingKey, properties, body);
+    }
 
     protected override void Dispose(bool dispose)
     {

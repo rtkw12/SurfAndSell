@@ -10,4 +10,16 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="HostedService\" />
+    <Folder Include="Runtime\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.Caching\Common.Caching.csproj" />
+    <ProjectReference Include="..\..\Common\Common.Messaging\Common.Messaging.csproj" />
+    <ProjectReference Include="..\..\Common\Common.Util\Common.Util.csproj" />
+  </ItemGroup>
+
 </Project>

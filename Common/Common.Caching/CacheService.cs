@@ -45,7 +45,7 @@ public class CacheService : ICacheService
     public T? GetData<T>(string key, TimeSpan? slidingExpiration = null)
     {
         var value = _cacheDb.StringGet(key);
-        if (string.IsNullOrEmpty(value))
+        if (!string.IsNullOrEmpty(value))
         {
             _cacheDb.KeyExpire(key, slidingExpiration ?? TimeSpan.FromSeconds(60));
             return JsonSerializer.Deserialize<T>(value);
@@ -75,7 +75,7 @@ public class CacheService : ICacheService
     public async Task<T?> GetDataAsync<T>(string key, TimeSpan? slidingExpiration = null)
     {
         var value = await _cacheDb.StringGetAsync(key);
-        if (string.IsNullOrEmpty(value))
+        if (!string.IsNullOrEmpty(value))
         {
             await _cacheDb.KeyExpireAsync(key, slidingExpiration ?? TimeSpan.FromSeconds(60));
             return JsonSerializer.Deserialize<T>(value);
