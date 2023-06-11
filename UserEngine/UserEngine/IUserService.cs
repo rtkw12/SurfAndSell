@@ -1,26 +1,14 @@
-﻿using Common.Util;
+﻿using Common.MongoDb;
+using Common.Util;
+using MongoDB.Driver;
 
 namespace UserEngine;
 
-public interface IUserService
+public interface IUserService : IMongoService
 {
-    Task<TryResult<IUser>> TryGetUser(string id);
-    Task<TryResult<IUser>> TryAddUser(IUserInput input);
-    Task<TryResult<IUser>> TryUpdateUser(string? name = null, string? email = null, string? password = null);
-}
-
-public interface IUserInput
-{
-    string Name { get; }
-    string Email { get; }
-    string Password { get; }
-}
-
-public interface IUser
-{
-    string Id { get; }
-    string Name { get; }
-    string Email { get; }
-
-    string GetToken();
+    Task<TryResult<IUser>> TryGetUser(IClientSessionHandle sessionHandle, string id, CancellationToken cancellationToken);
+    Task<TryResult<IUser>> TryAddUser(IClientSessionHandle sessionHandle, IUserInput input, CancellationToken cancellationToken);
+    Task<TryResult> TryUpdateUser(IClientSessionHandle sessionHandle, CancellationToken cancellationToken, string id, string? name = null, string? email = null, string? password = null);
+    Task<TryResult<IUser>> Login(IClientSessionHandle sessionHandle, string email, string password, CancellationToken cancellationToken);
+    Task<TryResult> Logout(IClientSessionHandle sessionHandle, string id, CancellationToken cancellationToken);
 }
